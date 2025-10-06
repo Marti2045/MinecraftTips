@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/png" href="https://th.bing.com/th/id/OIP.lUMeGCEZv3BArJUyz68HhgHaHa?w=201&h=201&c=7&r=0&o=7&cb=12&dpr=1.5&pid=1.7&rm=3">
+<title>MinecraftTips </title>
+
+
+<!-- Tipografía agradable -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg1: #0f1724;
+    --bg2: #0b1320;
+    --card: #0f1724cc;
+    --accent: linear-gradient(90deg,#2dd4bf,#60a5fa);
+    --glass: rgba(255,255,255,0.04);
+    --glass-strong: rgba(255,255,255,0.06);
+    --muted: #9aa4b2;
+    --good: #10b981;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background: radial-gradient(1200px 600px at 10% 10%, #071428 0%, transparent 15%),
+                radial-gradient(800px 400px at 90% 90%, #071026 0%, transparent 12%),
+                linear-gradient(180deg,var(--bg1),var(--bg2));
+    color:#e6eef8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px;
+  }
+
+  /* Layout central */
+  .wrap{
+    width:100%;
+    max-width:1100px;
+    display:grid;
+    grid-template-columns: 200px 1fr 240px;
+    gap:20px;
+    align-items:start;
+  }
+
+  /* Left: reloj */
+  .clock-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 6px 22px rgba(2,6,23,0.6);
+    min-height:140px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.03);
+    backdrop-filter: blur(6px);
+  }
+  .clock-card h4{margin:0;font-weight:600}
+  .clock{
+    font-size:28px;font-weight:700;margin-top:8px;
+    letter-spacing:0.6px;
+  }
+  .tz{color:var(--muted);font-size:13px;margin-top:6px}
+
+  /* Center: tarjeta principal */
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 12px 40px rgba(2,6,23,0.6);
+    border:1px solid rgba(255,255,255,0.035);
+    position:relative;
+    overflow:hidden;
+    min-height:320px;
+  }
+
+  .progress-wrap{
+    width:100%;
+    height:10px;
+    background:rgba(255,255,255,0.04);
+    border-radius:999px;
+    overflow:hidden;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+  }
+  .progress-bar{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    background: linear-gradient(90deg,#34d399,#60a5fa);
+    transition: width 0.15s linear;
+    box-shadow:0 6px 18px rgba(96,165,250,0.12), inset 0 -6px 20px rgba(0,0,0,0.15);
+  }
+
+  .card-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .tip-title{font-weight:700;font-size:18px}
+  .controls{
+    display:flex;gap:8px;align-items:center;
+  }
+  .btn{
+    background:var(--glass);
+    border:1px solid rgba(255,255,255,0.03);
+    padding:8px 12px;border-radius:10px;
+    cursor:pointer;font-weight:600;font-size:13px;
+    transition:transform .12s ease, background .12s;
+  }
+  .btn:hover{transform:translateY(-3px); background:var(--glass-strong)}
+
+  .tip-area{
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    border-radius:12px;
+    padding:18px;
+    min-height:180px;
+    max-height:360px;
+    overflow:auto;
+    line-height:1.6;
+    color:#e9f6ff;
+    border:1px solid rgba(255,255,255,0.02);
+  }
+  .tip-area p{margin:0 0 12px 0}
+  .tip-footer{
+    display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:var(--muted);
+    font-size:13px;
+  }
+
+  /* Right column: site name + estrellas */
+  .right{
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .site-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(3,8,20,0.6);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+  .sitename{
+    font-weight:800;font-size:20px;margin-bottom:8px;
+    background: -webkit-linear-gradient(#fff, #cfe8ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .sub{color:var(--muted);font-size:13px;margin-bottom:10px}
+
+  /* Stars */
+  .stars{
+    display:flex;gap:6px;align-items:center;
+  }
+  .star{
+    width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;
+    border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.03);
+    cursor:pointer;font-size:18px;color:var(--muted);transition:transform .12s, background .12s, color .12s;
+  }
+  .star:hover{transform:translateY(-4px)}
+  .star.active{background:linear-gradient(90deg,#f59e0b,#f97316);color:#07172b;border:none;box-shadow:0 8px 18px rgba(249,115,22,0.16)}
+
+  .rating-text{font-size:13px;color:var(--muted);margin-top:8px}
+
+  /* responsive */
+  @media (max-width:920px){
+    .wrap{grid-template-columns:1fr;max-width:860px}
+    .clock-card{order:2}
+    .card{order:1}
+    .right{order:3}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" role="main" aria-label="Minecraft tips layout">
+    <!-- Left: Reloj Bogotá -->
+    <aside class="clock-card" aria-live="polite">
+      <h4>Bogotá D.C.</h4>
+      <div class="clock" id="bogotaClock" aria-atomic="true">--:--:--</div>
+      <div class="tz">Zona: America/Bogota (GMT-5)</div>
+    </aside>
+
+    <!-- Centro: Tip card -->
+    <section class="card" aria-labelledby="tipTitle">
+      <div class="progress-wrap" aria-hidden="false" title="Progreso de lectura">
+        <div class="progress-bar" id="progressBar" style="width:0%"></div>
+      </div>
+
+      <div class="card-head">
+        <div>
+          <div class="tip-title" id="tipTitle">Tip para Minecraft</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px" id="tipIndex">Tip 1 / 8</div>
+        </div>
+
+        <div class="controls" aria-hidden="false">
+          <button class="btn" id="prevBtn" title="Anterior">◀ Anterior</button>
+          <button class="btn" id="nextBtn" title="Siguiente">Siguiente ▶</button>
+          <button class="btn" id="pauseBtn" title="Pausar rotación">Pausa ⏸</button>
+        </div>
+      </div>
+
+      <div class="tip-area" id="tipArea" tabindex="0" aria-describedby="tipIndex">
+        <!-- El texto cambia dinámicamente aquí -->
+        <p id="tipContent" style="white-space:pre-wrap"></p>
+      </div>
+
+      <div class="tip-footer">
+        <div id="tipHint">Si das en el boton de pausa cuando termine la barra de progrueso no te saltara al otro tip!.</div>
+        <div id="completedBadge" style="color:var(--good);font-weight:700;display:none">✓ Completado</div>
+      </div>
+    </section>
+
+    <!-- Derecha: Nombre del sitio + estrellas -->
+    <aside class="right">
+      <div class="site-card" aria-label="Información del sitio">
+        <div class="sitename">MinecraftTips.Co</div>
+        <div class="sub">Recomienda esta pagina! Esta pagina te ayudara a jugar Mejor.</div>
+
+        <div style="height:10px"></div> <!-- espacio reservado sin afectar diseño -->
+
+        <div style="font-size:14px;font-weight:700;margin-bottom:8px">Califica esta página</div>
+        <div class="stars" role="radiogroup" aria-label="Calificación de la página">
+          <button class="star" data-value="1" aria-label="1 estrella" title="1 estrella">★</button>
+          <button class="star" data-value="2" aria-label="2 estrellas" title="2 estrellas">★</button>
+          <button class="star" data-value="3" aria-label="3 estrellas" title="3 estrellas">★</button>
+          <button class="star" data-value="4" aria-label="4 estrellas" title="4 estrellas">★</button>
+          <button class="star" data-value="5" aria-label="5 estrellas" title="5 estrellas">★</button>
+        </div>
+        <div class="rating-text" id="ratingText">Todavía sin calificar</div>
+      </div>
+    </aside>
+  </div>
+
+<script>
+/* ---------- Datos: lista de tips ---------- */
+const tips = [
+  {
+    title: "Minado Eficiente (Branch Mining).",
+    text: "Para un minado eficiente, es fundamental seguir ciertas estrategias y técnicas que optimizan el proceso de extracción de recursos. Aquí hay algunos consejos clave:Exploración y Planificación: Antes de comenzar a minar, es esencial explorar el área y planificar la ruta. Busca afloramientos de minerales y cuevas con alta concentración de recursos. Selección de Herramientas Adecuadas: Utiliza picos de piedra, hierro o diamante, dependiendo del mineral que se pretende extraer. La durabilidad de las herramientas se puede aumentar utilizando un yunque Eficiencia en la Extracción: Implementa técnicas que maximicen la extracción de recursos en el menor tiempo posible, minimizando el esfuerzo y los riesgos Estas estrategias no solo aumentan la eficiencia, sino que también ayudan a maximizar la productividad y reducir costos operativos."
+
+  },
+  {
+    title: "Como Empezar en un Mundo!.",
+    text: "Cómo empezar en un mundo de Minecraft: Al entrar por primera vez a un mundo nuevo, lo primero que debes hacer es recolectar madera golpeando los árboles con la mano hasta conseguir troncos, luego ábrelos en el inventario y conviértelos en tablas de madera para crear una mesa de trabajo. Con la mesa fabrica tus primeras herramientas: un pico de madera, un hacha y una espada. Después construye un refugio antes de que anochezca, ya que la primera noche es la más peligrosa porque aparecen zombis, esqueletos y creepers. Puedes cavar un hueco en una montaña o construir una pequeña casa de madera o tierra, coloca antorchas dentro para evitar que aparezcan enemigos y una puerta para mantenerte seguro. Luego consigue comida matando animales como vacas, ovejas, cerdos o pollos, rompiendo hierba alta para conseguir semillas y plantar trigo o pescando con una caña. Cocina siempre la carne en un horno para que alimente más. Cuando tengas comida y refugio, empieza a minar: fabrica un pico de piedra y cava en forma de escalera o diagonal, nunca hacia abajo. Busca carbón para antorchas, hierro para mejores herramientas y diamantes en niveles profundos. Fabrica también una cama con lana de oveja y madera, así podrás dormir para saltar la noche y establecer tu punto de reaparición. Mejora tus herramientas de piedra a hierro y luego a diamante, y crea armadura para protegerte. Usa el hierro para hacer un cubo, un pico y un escudo. Expande tu base agregando cofres, hornos, cultivos y vallas para mantenerte seguro. Organiza tus recursos y prepara provisiones para explorar. Cuando tengas suficiente comida y equipo, aventúrate en cuevas profundas o busca aldeas para comerciar. Más adelante podrás acceder al Nether y obtener mejores recursos. Siempre lleva antorchas, comida y una cubeta de agua. Consejo final: anota tus coordenadas antes de explorar para no perderte y mantén tus herramientas reparadas con el yunque y encantamientos."
+  },
+  {
+    title: "Combatir mobs como un PRO!",
+    text: "Cómo combatir mobs como un pro: Para pelear eficazmente en Minecraft debes conocer los movimientos, alcances y patrones de ataque de cada enemigo. Usa el golpe crítico saltando y golpeando mientras caes para hacer más daño. Lleva siempre un escudo equipado, ya que bloquea ataques de esqueletos, zombis y creepers. Aprende a usar el tiempo de recuperación del arma: espera un segundo entre golpes para causar el máximo daño. Mantén tu barra de comida llena para regenerar salud y no pelear con hambre. Cuando luches contra esqueletos, muévete en zigzag para esquivar sus flechas y acércate con el escudo levantado. Contra creepers, acércate, golpea y retrocede rápidamente para evitar la explosión; también puedes usar un arco o una ballesta desde lejos. En combate con enderman, nunca los mires directamente a los ojos; si lo haces, colócate bajo un techo de dos bloques de altura para que no te alcancen. Usa antorchas o luces para evitar que los mobs aparezcan en tu zona. Si luchas en cuevas, ilumina bien y crea salidas seguras. Las pociones también ayudan: la de fuerza aumenta tu daño y la de regeneración te cura en combate. Usa trampas, lava o agua para controlar grupos de mobs. Y recuerda reparar tus armas y armaduras con un yunque y encantamientos como Sharpness, Protection y Unbreaking para mejorar tu rendimiento en batalla."
+  },
+  {
+    title: "Automatizaciones Sencillas",
+    text: "Automatizaciones sencillas: En Minecraft puedes ahorrar tiempo creando sistemas automáticos que trabajen por ti. Comienza con granjas básicas, como una granja de cultivo automático usando dispensadores y cubos de agua para recoger los cultivos al presionar un botón o una palanca. También puedes hacer una granja de hierro colocando aldeanos cerca de camas y mesas de trabajo junto a un zombi, lo que generará golems que al morir soltarán hierro. Otra automatización útil es la granja de experiencia, donde los mobs caen desde una altura controlada para que puedas matarlos fácilmente y obtener experiencia y objetos. Usa tolvas (hoppers) debajo de los mobs o cultivos para recoger automáticamente los ítems y almacenarlos en cofres. Para automatizar el cocinado de alimentos, coloca un horno encima de una tolva con carbón y otra con comida, así el sistema cocina solo. Practica con redstone: aprende a usar pistones, repetidores y comparadores para crear puertas automáticas, trampas o mecanismos que recojan recursos. Estas automatizaciones te permitirán avanzar más rápido, tener más materiales y dedicarte a explorar, construir o combatir sin preocuparte por tareas repetitivas."
+  },
+  {
+    title: "Construcción y Estética",
+    text: "Construcción y estética: En Minecraft, construir no solo se trata de crear estructuras funcionales, sino también de hacerlas visualmente atractivas. Para lograrlo, combina diferentes materiales y texturas, como madera, piedra, ladrillos y terracota, para darle profundidad y variedad a tus construcciones. Evita las paredes planas y usa escaleras, losas y vallas para agregar detalles y volumen. Añade ventanas, repisas, columnas y marcos que den forma y carácter a cada edificio. Usa la iluminación estratégicamente con antorchas, faroles o linternas para crear ambientes cálidos y evitar que aparezcan mobs dentro. Incorpora vegetación como flores, arbustos y enredaderas para dar vida y naturalidad al entorno. Juega con los niveles de altura, construyendo techos inclinados y pisos elevados para que tus estructuras se vean más realistas. Si trabajas en aldeas o ciudades, mantén un estilo coherente usando paletas de colores similares y caminos que conecten todo. También puedes usar bloques decorativos como estandartes, cuadros y macetas para dar un toque final a cada rincón. Recuerda que la estética no tiene límites: experimenta con combinaciones y estilos hasta que cada construcción refleje tu creatividad y personalidad dentro del mundo de Minecraft."
+  },
+  {
+    title: "Encantamientos Prioritarios",
+    text: "Encantamientos prioritarios: Los encantamientos son esenciales para mejorar tu equipo y sobrevivir en Minecraft, especialmente en niveles avanzados. El primer encantamiento que debes conseguir es Protección (Protection) para tu armadura, ya que reduce el daño general. Para el casco, agrega Respiración (Respiration) y Afinidad Acuática (Aqua Affinity) si exploras bajo el agua. En el pecho, además de Protección, usa Irrompibilidad (Unbreaking) y Reparación (Mending) para que dure más. En los pantalones, agrega Caída Suave (Feather Falling) para evitar daños por caídas. En las botas, además puedes usar Velocidad en el Agua (Depth Strider) o Hielo Caminante (Frost Walker) según tus preferencias. Para la espada, los encantamientos prioritarios son Filo (Sharpness), Empuje (Knockback), Saqueo (Looting) y Reparación. En el arco, busca Poder (Power), Infinitud (Infinity) o Reparación, dependiendo de si prefieres conservar o gastar flechas. Para las herramientas, usa Eficiencia (Efficiency), Irrompibilidad y Reparación; en el pico, agrega Toque de Seda (Silk Touch) o Fortuna (Fortune) según si quieres bloques o más recursos. Recuerda combinar encantamientos con un yunque y libros encantados para obtener los mejores resultados. Un equipo completamente encantado te permitirá combatir mobs, minar y explorar con mayor seguridad, velocidad y durabilidad, convirtiéndote en un verdadero maestro de Minecraft."
+  },
+  {
+    title: "Nether y cómo Sobrevivir!",
+    text: "Nether y cómo sobrevivir: El Nether es una de las dimensiones más peligrosas de Minecraft, pero también una de las más útiles. Antes de entrar, prepárate bien con una armadura de diamante o netherita completamente encantada, un arco o ballesta con Poder y un buen suministro de comida. Lleva siempre un encendedor (flint and steel) por si el portal se apaga, y bloques resistentes como piedra o bloques del Nether para protegerte o construir refugios. Al llegar, lo primero que debes hacer es asegurar el portal construyendo una pequeña base a su alrededor para evitar que mobs como ghasts o piglins te ataquen. Usa oro en tu equipamiento, como un casco, para que los piglins no sean hostiles contigo. Evita mirar a los enderman y no ataques a los piglins a menos que estés listo para pelear. Lleva pociones de resistencia al fuego, ya que muchos enemigos y el propio ambiente pueden quemarte. Al explorar fortalezas del Nether, ve con cuidado y coloca antorchas o bloques para marcar el camino de regreso. Los blazes son una fuente esencial de varas de blaze, necesarias para fabricar ojos de Ender y avanzar al End, así que lleva un escudo y usa pociones de resistencia al fuego para combatirlos fácilmente. Cava con cuidado, ya que el terreno está lleno de lava oculta. Si buscas Netherita, mina entre las capas 12 y 15 usando camas o TNT para explotar áreas grandes, pero siempre con precaución. Por último, recuerda tener una salida segura y materiales suficientes para regresar; el Nether es hostil, pero dominarlo te convertirá en un jugador experto y te abrirá las puertas al End y a los mayores desafíos de Minecraft."
+  },
+  {
+    title: "Tips de redstone fácil!",
+    text: "Tips de redstone fácil: La redstone es el sistema eléctrico de Minecraft y te permite crear mecanismos automáticos, trampas, puertas secretas y mucho más. Para empezar, entiende los componentes básicos: el polvo de redstone transmite energía, las antorchas actúan como fuentes de energía o inversores, y las palancas, botones o placas de presión sirven para activar los circuitos. Los repetidores amplían la señal y añaden retraso, mientras que los comparadores detectan estados de contenedores como cofres y hornos. Un tip sencillo es usar pistones pegajosos (sticky pistons) para crear puertas secretas o trampas ocultas. También puedes hacer una puerta automática colocando placas de presión frente a puertas de hierro y conectándolas con redstone. Si quieres una granja automática, combina tolvas, dispensadores y observadores para detectar cultivos y recolectarlos sin esfuerzo. Recuerda que la señal de redstone solo viaja 15 bloques, así que usa repetidores para extenderla cuando sea necesario. Practica con mecanismos simples, como lámparas de redstone que se encienden al pisar una placa o un sistema de alarma con sonidos cuando un mob se acerca. La clave está en experimentar: prueba distintas combinaciones y observa cómo fluye la energía. A medida que practiques, entenderás la lógica de los circuitos y podrás construir sistemas más complejos, desde ascensores automáticos hasta mecanismos ocultos que harán tu mundo más funcional y divertido."
+  }
+];
+
+/* ---------- Elementos DOM ---------- */
+const tipTitle = document.getElementById('tipTitle');
+const tipContent = document.getElementById('tipContent');
+const tipIndex = document.getElementById('tipIndex');
+const tipArea = document.getElementById('tipArea');
+const progressBar = document.getElementById('progressBar');
+const completedBadge = document.getElementById('completedBadge');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const pauseBtn = document.getElementById('pauseBtn');
+
+let current = 0;
+let rotationInterval = 12000; // ms para rotar tip si no hay scroll
+let autoRotate = true;
+let rotationTimer = null;
+let startTime = null;
+let elapsedWhileVisible = 0;
+
+/* ---------- Mostrar tip ---------- */
+function showTip(i){
+  current = ((i % tips.length) + tips.length) % tips.length;
+  tipTitle.textContent = tips[current].title;
+  tipContent.textContent = tips[current].text;
+  tipIndex.textContent = `Tip ${current+1} / ${tips.length}`;
+  resetProgress();
+  // restart rotation timer
+  if(autoRotate){ startRotationTimer(); }
+}
+
+/* ---------- Progress logic ---------- */
+/*
+- Si tipArea es desplazable (scrollHeight > clientHeight): usar porcentaje de scroll
+- Si no, usar tiempo transcurrido vs rotationInterval para simular lectura
+*/
+function updateProgress(){
+  // scroll-based
+  const scrollable = tipArea.scrollHeight > tipArea.clientHeight + 4;
+  let percent = 0;
+  if(scrollable){
+    const sc = tipArea.scrollTop;
+    const max = tipArea.scrollHeight - tipArea.clientHeight;
+    percent = Math.min(100, Math.round((sc / max) * 100));
+  } else {
+    // tiempo-based (elapsedWhileVisible / rotationInterval)
+    const now = Date.now();
+    if(!startTime) startTime = now;
+    elapsedWhileVisible = now - startTime;
+    percent = Math.min(100, Math.round((elapsedWhileVisible / rotationInterval) * 100));
+  }
+  progressBar.style.width = percent + '%';
+  if(percent >= 100){
+    completedBadge.style.display = 'block';
+  } else {
+    completedBadge.style.display = 'none';
+  }
+}
+
+/* Reset progreso para un nuevo tip */
+function resetProgress(){
+  startTime = Date.now();
+  elapsedWhileVisible = 0;
+  progressBar.style.width = '0%';
+  completedBadge.style.display = 'none';
+}
+
+/* ---------- Auto-rotación ---------- */
+function startRotationTimer(){
+  stopRotationTimer();
+  rotationTimer = setInterval(()=>{
+    // solo cambiar si autoRotate activo
+    if(autoRotate) nextTip();
+  }, rotationInterval);
+}
+function stopRotationTimer(){
+  if(rotationTimer){ clearInterval(rotationTimer); rotationTimer = null; }
+}
+
+/* ---------- Navegación ---------- */
+function nextTip(){
+  showTip(current+1);
+}
+function prevTip(){
+  showTip(current-1);
+}
+
+/* ---------- Eventos ---------- */
+nextBtn.addEventListener('click', ()=>{
+  autoRotate = false;
+  nextTip();
+});
+prevBtn.addEventListener('click', ()=>{
+  autoRotate = false;
+  prevTip();
+});
+pauseBtn.addEventListener('click', ()=>{
+  autoRotate = !autoRotate;
+  pauseBtn.textContent = autoRotate ? 'Pausa ⏸' : 'Reanudar ▶';
+  if(autoRotate) startRotationTimer();
+  else stopRotationTimer();
+});
+
+tipArea.addEventListener('scroll', ()=>{
+  // si el usuario desplaza, aumentar progreso en base a scroll
+  updateProgress();
+  // al desplazar manualmente consideramos que quiere pausar la rotación
+  // (pero esto es opcional; lo dejamos activable)
+});
+
+/* Update progress cada 150ms */
+setInterval(updateProgress, 150);
+
+/* Detect visibility (si el usuario cambia de pestaña) para pausar contador de tiempo */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden){
+    // stop time-based accumulation
+    // no special action (startTime remains) so progress will advance slower while hidden
+  } else {
+    // restore startTime so that time-based progress resumes correctly
+    startTime = Date.now() - Math.min(elapsedWhileVisible, rotationInterval);
+  }
+});
+
+/* ---------- Inicialización ---------- */
+showTip(0);
+startRotationTimer();
+
+/* ---------- Reloj de Bogotá ---------- */
+function updateBogotaClock(){
+  try{
+    const now = new Date();
+    // usar Intl para zona America/Bogota
+    const bogota = new Intl.DateTimeFormat('es-CO', {
+      timeZone: 'America/Bogota',
+      hour: '2-digit', minute:'2-digit', second:'2-digit', hour12:false
+    }).format(now);
+    document.getElementById('bogotaClock').textContent = bogota;
+  }catch(e){
+    // fallback simple
+    const d = new Date();
+    document.getElementById('bogotaClock').textContent = d.toLocaleTimeString();
+  }
+}
+updateBogotaClock();
+setInterval(updateBogotaClock, 1000);
+
+/* ---------- Calificación por estrellas ---------- */
+const starButtons = document.querySelectorAll('.star');
+const ratingText = document.getElementById('ratingText');
+let selectedRating = 0;
+
+starButtons.forEach(btn => {
+  btn.addEventListener('mouseenter', ()=> {
+    const v = parseInt(btn.dataset.value,10);
+    highlightStars(v);
+  });
+  btn.addEventListener('mouseleave', ()=> {
+    highlightStars(selectedRating);
+  });
+  btn.addEventListener('click', ()=>{
+    selectedRating = parseInt(btn.dataset.value,10);
+    highlightStars(selectedRating);
+    ratingText.textContent = `Gracias — has dado ${selectedRating} ${selectedRating===1? 'estrella' : 'estrellas'}.`;
+    // aquí podríamos enviar la calificación a un servidor con fetch si se desea
+  });
+});
+function highlightStars(n){
+  starButtons.forEach(btn=>{
+    const v = parseInt(btn.dataset.value,10);
+    if(v <= n) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+}
+
+/* ---------- Accesibilidad: teclado para cambiar tips ---------- */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight') { autoRotate=false; nextTip(); }
+  if(e.key === 'ArrowLeft')  { autoRotate=false; prevTip(); }
+});
+
+/* ---------- Mantener progreso y rotación coherentes cuando se cambia tip manualmente ---------- */
+tipArea.addEventListener('focus', ()=> {
+  // reset timer start for time-based progress
+  startTime = Date.now();
+});
+
+/* Si el contenido es corto y el progreso llega a 100% con el tiempo, avanzamos al siguiente tip automáticamente */
+setInterval(()=>{
+  const width = parseFloat(progressBar.style.width) || 0;
+  if(width >= 100){
+    // pequeña pausa antes de pasar al siguiente para que el usuario vea la marca de completado
+    setTimeout(()=> {
+      if(autoRotate){
+        nextTip();
+      } else {
+        // si no hay autoRotate, solo resalta completado; no avanzar
+      }
+    }, 800);
+  }
+}, 1000);
+
+</script>
+</body>
+</html>
